@@ -8,10 +8,14 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "postinstall": "patch-package",
-    "postuninstall": "patch-package"
+    "postinstall": "patch-package && cd ios && export NO_FLIPPER=1 && pod install && cd ..",
+    "postuninstall": "patch-package && cd ios && export NO_FLIPPER=1 && pod install && cd ..",
+    "releaseAndroid": "cd android && ./gradlew assembleRelease && cd ..",
+    "bundleRelease": "cd android && ./gradlew bundleRelease && cd ..",
+    "bundle": "cd android && ./gradlew bundleRelease && cd .."
   },
   "dependencies": {
+    "@react-native-async-storage/async-storage": "^2.1.2",
     "@react-native-community/netinfo": "^11.4.1",
     "@react-navigation/bottom-tabs": "^7.2.1",
     "@react-navigation/elements": "^2.2.6",
@@ -26,7 +30,10 @@
     "react-native-device-info": "^14.0.4",
     "react-native-fast-image": "^8.6.3",
     "react-native-safe-area-context": "^5.3.0",
-    "react-native-screens": "^4.9.1"
+    "react-native-screens": "^4.9.1",
+    "redux": "^5.0.1",
+    "redux-persist": "^6.0.0",
+    "redux-thunk": "^3.1.0"
   },
   "devDependencies": {
     "@babel/core": "^7.25.2",

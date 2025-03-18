@@ -31,7 +31,7 @@ const Image = ({ source, headers = {}, style = {}, resizeMode = FastImage.resize
         <>
             <FastImage
                 style={style}
-                // tintColor={tintColor}
+                tintColor={tintColor}
                 onError={onError}
                 onLoadEnd={onLoadEnd}
                 onLoadStart={onLoadStart}
