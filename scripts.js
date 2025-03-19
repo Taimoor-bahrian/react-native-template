@@ -17,7 +17,6 @@ console.log(`🔄 Updating package name to: ${packageName}`);
 // ---- ANDROID CONFIG ----
 const androidManifestPath = path.join(
   projectRoot,
-
   "android",
   "app",
   "src",
@@ -31,7 +30,6 @@ const newPackagePath = path.join(projectRoot, "android", "app", "src", "main", "
 // ---- iOS CONFIG ----
 const iosProjectPath = path.join(
   projectRoot,
-
   "ios",
   "Little.xcodeproj",
   "project.pbxproj"
@@ -45,11 +43,16 @@ const updateFile = (filePath, searchRegex, replaceValue) => {
     let content = fs.readFileSync(filePath, "utf8");
 
     if (searchRegex.test(content)) {
+      console.log(`🔹 Updating ${filePath}...`);
+      console.log(`🔍 Before:\n${content.match(searchRegex)}`); // Debugging
+
       content = content.replace(searchRegex, replaceValue);
       fs.writeFileSync(filePath, content, "utf8");
+
       console.log(`✅ Updated: ${filePath}`);
+      console.log(`🔍 After:\n${content.match(replaceValue)}`); // Debugging
     } else {
-      console.log(`⚠️ No changes needed in: ${filePath}`);
+      console.log(`⚠️ Pattern not found in: ${filePath}`);
     }
   } else {
     console.log(`❌ File not found: ${filePath}`);
@@ -70,8 +73,8 @@ if (fs.existsSync(oldPackagePath)) {
 }
 
 // 📌 3. Debug: Update MainApplication.java & MainActivity.java
-const mainApplicationPath = path.join(newPackagePath, "MainApplication.java");
-const mainActivityPath = path.join(newPackagePath, "MainActivity.java");
+const mainApplicationPath = path.join(newPackagePath, "MainApplication.kt");
+const mainActivityPath = path.join(newPackagePath, "MainActivity.kt");
 
 console.log(`🔍 Checking if MainApplication.java exists at: ${mainApplicationPath}`);
 updateFile(mainApplicationPath, /package com\.myapp/g, `package ${packageName}`);
