@@ -9,6 +9,7 @@ const packageName = process.env.PACKAGE_NAME || "com.myapp"; // Default package 
 const packagePath = packageName.replace(/\./g, "/"); // Convert package name to folder format
 const iosBundleId = packageName; // Same for iOS
 const projectRoot = process.cwd(); // Project root directory
+const applicationName = process.env.APPLICATION_NAME || "MyApp"; // Default application name
 
 console.log(`🔄 projectRoot: ${projectRoot}`);
 console.log(`🔄 Updating package name to: ${packageName}`);
@@ -60,13 +61,9 @@ const updateFile = (filePath, searchRegex, replaceValue) => {
   }
 };
 
-// 📌 Update `namespace` in `build.gradle`
+// 📌 Update `namespace` and `applicationId` in `build.gradle`
 const buildGradlePath = path.join(projectRoot, "android", "app", "build.gradle");
-console.log(`🔍 Updating namespace in build.gradle: ${buildGradlePath}`);
 updateFile(buildGradlePath, /namespace\s+"[\w.]+"/g, `namespace "${packageName}"`);
-
-// 📌 Update `applicationId` in `build.gradle`
-console.log(`🔍 Updating applicationId in build.gradle: ${buildGradlePath}`);
 updateFile(buildGradlePath, /applicationId\s+"[\w.]+"/g, `applicationId "${packageName}"`);
 
 // 📌 Rename Package Folder
@@ -82,19 +79,19 @@ if (fs.existsSync(oldPackagePath)) {
 // 📌 Update `MainApplication.kt` & `MainActivity.kt`
 const mainApplicationPath = path.join(newPackagePath, "MainApplication.kt");
 const mainActivityPath = path.join(newPackagePath, "MainActivity.kt");
-
-console.log(`🔍 Checking MainApplication.kt: ${mainApplicationPath}`);
 updateFile(mainApplicationPath, /package\s+[\w.]+/g, `package ${packageName}`);
-
-console.log(`🔍 Checking MainActivity.kt: ${mainActivityPath}`);
 updateFile(mainActivityPath, /package\s+[\w.]+/g, `package ${packageName}`);
 
 // 📌 Update iOS Bundle ID
-console.log(`🔍 Checking project.pbxproj: ${iosProjectPath}`);
-// updateFile(iosProjectPath, /PRODUCT_BUNDLE_IDENTIFIER\s*=\s*"?[\w.]+"?/g, `PRODUCT_BUNDLE_IDENTIFIER = "${iosBundleId}"`);
-updateFile(iosProjectPath, /PRODUCT_BUNDLE_IDENTIFIER\s*=\s*"?[\w.]+"?\$?\(PRODUCT_NAME:rfc1034identifier\)";?/g, `PRODUCT_BUNDLE_IDENTIFIER = "${iosBundleId}.$(PRODUCT_NAME:rfc1034identifier)";`);
-
-console.log(`🔍 Checking Info.plist: ${iosInfoPlistPath}`);
+updateFile(iosProjectPath, /PRODUCT_BUNDLE_IDENTIFIER\s*=\s*"?[\w.]+"?\$?\(PRODUCT_NAME:rfc1034identifier\)"?;/g, `PRODUCT_BUNDLE_IDENTIFIER = "${iosBundleId}.$(PRODUCT_NAME:rfc1034identifier)";`);
 updateFile(iosInfoPlistPath, /<string>[\w.]+<\/string>/g, `<string>${iosBundleId}</string>`);
+
+// 📌 Update Application Name
+updateFile(mainActivityPath, /(?<=override fun getMainComponentName\(\): String = ")\w+(?=")/g, applicationName);
+updateFile(path.join(projectRoot, "app.json"), /"name":\s*"[^"]+"/g, `"name": "${applicationName}"`);
+updateFile(path.join(projectRoot, "package.json"), /"name":\s*"[^"]+"/g, `"name": "${applicationName}"`);
+updateFile(path.join(projectRoot, "android", "settings.gradle"), /rootProject.name\s*=\s*['"][^'"]+['"]/g, `rootProject.name = '${applicationName}'`);
+updateFile(path.join(projectRoot, "android", "app", "src", "main", "res", "values", "strings.xml"), /<string name="app_name">[^<]+<\/string>/g, `<string name="app_name">${applicationName}</string>`);
+updateFile(iosInfoPlistPath, /<key>CFBundleDisplayName<\/key>\n\s*<string>[^<]+<\/string>/g, `<key>CFBundleDisplayName</key>\n  <string>${applicationName}</string>`);
 
 console.log("✅ Package Name & Bundle ID Updated Successfully! 🎉");
