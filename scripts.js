@@ -14,6 +14,17 @@ const projectRoot = process.cwd(); // Move up two levels to project root
 console.log(`🔄 projectRoot: ${projectRoot}`);
 console.log(`🔄 Updating package name to: ${packageName}`);
 
+
+const findOldPackage = (basePath) => {
+  const javaPath = path.join(basePath, "android", "app", "src", "main", "java");
+  if (!fs.existsSync(javaPath)) return null;
+
+  const folders = fs.readdirSync(javaPath);
+  if (folders.length === 1) return folders[0]; // Assuming only one package exists
+
+  return null;
+};
+
 // ---- ANDROID CONFIG ----
 const androidManifestPath = path.join(
   projectRoot,
@@ -24,7 +35,8 @@ const androidManifestPath = path.join(
   "AndroidManifest.xml"
 );
 
-const oldPackagePath = path.join(projectRoot, "android", "app", "src", "main", "java", "com", "myapp");
+const oldPackage = findOldPackage(__dirname) || "com.myapp";
+const oldPackagePath = path.join(__dirname, "..", "android", "app", "src", "main", "java", ...oldPackage.split("."));
 const newPackagePath = path.join(projectRoot, "android", "app", "src", "main", "java", ...packageName.split("."));
 
 // ---- iOS CONFIG ----
