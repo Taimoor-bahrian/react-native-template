@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import FastImage from 'react-native-fast-image';
+import FastImage from '@d11/react-native-fast-image';
 import { Assets } from '@app/assets';
 
 const Image = ({ source, headers = {}, style = {}, resizeMode = FastImage.resizeMode.cover, tintColor = '' }: ImageProps) => {
