@@ -10,6 +10,7 @@ const packagePath = packageName.replace(/\./g, "/"); // Convert package name to 
 const iosBundleId = packageName; // Same for iOS
 const projectRoot = process.cwd(); // Project root directory
 const applicationName = process.env.APPLICATION_NAME || "MyApp"; // Default application name
+const applicationDisplayName = process.env.APPLICATION_DISPLAY_NAME || "MyApp"; // Default application name
 
 console.log(`🔄 projectRoot: ${projectRoot}`);
 console.log(`🔄 Updating package name to: ${packageName}`);
@@ -89,9 +90,10 @@ updateFile(iosInfoPlistPath, /<string>[\w.]+<\/string>/g, `<string>${iosBundleId
 // 📌 Update Application Name
 updateFile(mainActivityPath, /(?<=override fun getMainComponentName\(\): String = ")\w+(?=")/g, applicationName);
 updateFile(path.join(projectRoot, "app.json"), /"name":\s*"[^"]+"/g, `"name": "${applicationName}"`);
+updateFile(path.join(projectRoot, "app.json"), /"displayName":\s*"[^"]+"/g, `"displayName": "${applicationDisplayName}"`);
 updateFile(path.join(projectRoot, "package.json"), /"name":\s*"[^"]+"/g, `"name": "${applicationName}"`);
 updateFile(path.join(projectRoot, "android", "settings.gradle"), /rootProject.name\s*=\s*['"][^'"]+['"]/g, `rootProject.name = '${applicationName}'`);
-updateFile(path.join(projectRoot, "android", "app", "src", "main", "res", "values", "strings.xml"), /<string name="app_name">[^<]+<\/string>/g, `<string name="app_name">${applicationName}</string>`);
-updateFile(iosInfoPlistPath, /<key>CFBundleDisplayName<\/key>\n\s*<string>[^<]+<\/string>/g, `<key>CFBundleDisplayName</key>\n  <string>${applicationName}</string>`);
+updateFile(path.join(projectRoot, "android", "app", "src", "main", "res", "values", "strings.xml"), /<string name="app_name">[^<]+<\/string>/g, `<string name="app_name">${applicationDisplayName}</string>`);
+updateFile(iosInfoPlistPath, /<key>CFBundleDisplayName<\/key>\n\s*<string>[^<]+<\/string>/g, `<key>CFBundleDisplayName</key>\n  <string>${applicationDisplayName}</string>`);
 
 console.log("✅ Package Name & Bundle ID Updated Successfully! 🎉");
