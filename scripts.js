@@ -8,8 +8,7 @@ const path = require("path");
 const packageName = process.env.PACKAGE_NAME || "com.myapp"; // ⚡ Default package name
 const packagePath = packageName.replace(/\./g, "/"); // Convert package name to folder path format
 const iosBundleId = packageName; // Same for iOS
-
-const projectRoot = path.resolve(__dirname, "..", ".."); // Move up two levels to project root
+const projectRoot = process.cwd(); // Move up two levels to project root
 
 
 console.log(`🔄 projectRoot: ${projectRoot}`);
