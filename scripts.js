@@ -5,7 +5,7 @@ console.log("This is post init script");
 const fs = require("fs");
 const path = require("path");
 
-const packageName = process.env.PACKAGE_NAME || "com.myapp"; // ⚡ Default package name (change dynamically)
+const packageName = process.env.PACKAGE_NAME || "com.myapp"; // ⚡ Default package name
 const packagePath = packageName.replace(/\./g, "/"); // Convert package name to folder path format
 const iosBundleId = packageName; // Same for iOS
 
@@ -22,10 +22,7 @@ const androidManifestPath = path.join(
   "AndroidManifest.xml"
 );
 
-// Old package name folder (before renaming)
 const oldPackagePath = path.join(__dirname, "..", "android", "app", "src", "main", "java", "com", "myapp");
-
-// New package name folder
 const newPackagePath = path.join(__dirname, "..", "android", "app", "src", "main", "java", ...packageName.split("."));
 
 // ---- iOS CONFIG ----
@@ -43,36 +40,47 @@ const iosInfoPlistPath = path.join(__dirname, "..", "ios", "Little", "Info.plist
 const updateFile = (filePath, searchRegex, replaceValue) => {
   if (fs.existsSync(filePath)) {
     let content = fs.readFileSync(filePath, "utf8");
-    content = content.replace(searchRegex, replaceValue);
-    fs.writeFileSync(filePath, content, "utf8");
-    console.log(`✅ Updated: ${filePath}`);
+
+    if (searchRegex.test(content)) {
+      content = content.replace(searchRegex, replaceValue);
+      fs.writeFileSync(filePath, content, "utf8");
+      console.log(`✅ Updated: ${filePath}`);
+    } else {
+      console.log(`⚠️ No changes needed in: ${filePath}`);
+    }
+  } else {
+    console.log(`❌ File not found: ${filePath}`);
   }
 };
 
-// 📌 1. Update Android Manifest.xml
+// 📌 1. Debug: Check if AndroidManifest.xml exists
+console.log(`🔍 Checking if AndroidManifest.xml exists at: ${androidManifestPath}`);
 updateFile(androidManifestPath, /package="com\.myapp"/g, `package="${packageName}"`);
 
-// 📌 2. Rename package folder (com.myapp → com.newpackage)
+// 📌 2. Debug: Rename package folder
 if (fs.existsSync(oldPackagePath)) {
+  console.log(`🔄 Renaming package folder from ${oldPackagePath} to ${newPackagePath}`);
   fs.renameSync(oldPackagePath, newPackagePath);
   console.log(`✅ Renamed package folder to: ${newPackagePath}`);
+} else {
+  console.log(`❌ Old package folder not found: ${oldPackagePath}`);
 }
 
-// 📌 3. Update MainApplication.java & MainActivity.java
-updateFile(
-  path.join(newPackagePath, "MainApplication.java"),
-  /package com\.myapp/g,
-  `package ${packageName}`
-);
+// 📌 3. Debug: Update MainApplication.java & MainActivity.java
+const mainApplicationPath = path.join(newPackagePath, "MainApplication.java");
+const mainActivityPath = path.join(newPackagePath, "MainActivity.java");
 
-updateFile(
-  path.join(newPackagePath, "MainActivity.java"),
-  /package com\.myapp/g,
-  `package ${packageName}`
-);
+console.log(`🔍 Checking if MainApplication.java exists at: ${mainApplicationPath}`);
+updateFile(mainApplicationPath, /package com\.myapp/g, `package ${packageName}`);
 
-// 📌 4. Update iOS Bundle ID
+console.log(`🔍 Checking if MainActivity.java exists at: ${mainActivityPath}`);
+updateFile(mainActivityPath, /package com\.myapp/g, `package ${packageName}`);
+
+// 📌 4. Debug: Update iOS Bundle ID
+console.log(`🔍 Checking if project.pbxproj exists at: ${iosProjectPath}`);
 updateFile(iosProjectPath, /PRODUCT_BUNDLE_IDENTIFIER = com\.myapp/g, `PRODUCT_BUNDLE_IDENTIFIER = ${iosBundleId}`);
+
+console.log(`🔍 Checking if Info.plist exists at: ${iosInfoPlistPath}`);
 updateFile(iosInfoPlistPath, /<string>com\.myapp<\/string>/g, `<string>${iosBundleId}</string>`);
 
 console.log("✅ Package Name & Bundle ID Updated Successfully! 🎉");
