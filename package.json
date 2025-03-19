@@ -8,8 +8,8 @@
     "lint": "eslint .",
     "start": "react-native start",
     "test": "jest",
-    "postinstall": "patch-package",
-    "postuninstall": "patch-package",
+    "postinstall": "patch-package && cd ios && export NO_FLIPPER=1 && pod install && cd ..",
+    "postuninstall": "patch-package && cd ios && export NO_FLIPPER=1 && pod install && cd ..",
     "releaseAndroid": "cd android && ./gradlew assembleRelease && cd ..",
     "bundleRelease": "cd android && ./gradlew bundleRelease && cd ..",
     "bundle": "cd android && ./gradlew bundleRelease && cd .."
