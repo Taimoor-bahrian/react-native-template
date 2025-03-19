@@ -9,11 +9,15 @@ const packageName = process.env.PACKAGE_NAME || "com.myapp"; // ⚡ Default pack
 const packagePath = packageName.replace(/\./g, "/"); // Convert package name to folder path format
 const iosBundleId = packageName; // Same for iOS
 
+const projectRoot = path.resolve(__dirname, "..", ".."); // Move up two levels to project root
+
+
+console.log(`🔄 projectRoot: ${projectRoot}`);
 console.log(`🔄 Updating package name to: ${packageName}`);
 
 // ---- ANDROID CONFIG ----
 const androidManifestPath = path.join(
-  __dirname,
+  projectRoot,
   "..",
   "android",
   "app",
@@ -22,19 +26,19 @@ const androidManifestPath = path.join(
   "AndroidManifest.xml"
 );
 
-const oldPackagePath = path.join(__dirname, "..", "android", "app", "src", "main", "java", "com", "myapp");
-const newPackagePath = path.join(__dirname, "..", "android", "app", "src", "main", "java", ...packageName.split("."));
+const oldPackagePath = path.join(projectRoot, "..", "android", "app", "src", "main", "java", "com", "myapp");
+const newPackagePath = path.join(projectRoot, "..", "android", "app", "src", "main", "java", ...packageName.split("."));
 
 // ---- iOS CONFIG ----
 const iosProjectPath = path.join(
-  __dirname,
+  projectRoot,
   "..",
   "ios",
   "Little.xcodeproj",
   "project.pbxproj"
 );
 
-const iosInfoPlistPath = path.join(__dirname, "..", "ios", "Little", "Info.plist");
+const iosInfoPlistPath = path.join(projectRoot, "..", "ios", "Little", "Info.plist");
 
 // Function to update package name in a file
 const updateFile = (filePath, searchRegex, replaceValue) => {
