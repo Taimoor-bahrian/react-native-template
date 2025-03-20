@@ -12,8 +12,8 @@ const projectRoot = process.cwd(); // Project root directory
 const applicationName = process.env.APPLICATION_NAME || "MyApp"; // Default application name
 const applicationDisplayName = process.env.APPLICATION_DISPLAY_NAME || "MyApp"; // Default application name
 
-console.log(`🔄 projectRoot: ${projectRoot}`);
-console.log(`🔄 Updating package name to: ${packageName}`);
+// console.log(`🔄 projectRoot: ${projectRoot}`);
+// console.log(`🔄 Updating package name to: ${packageName}`);
 
 // ---- ANDROID CONFIG ----
 const androidPath = path.join(projectRoot, "android", "app", "src", "main");
@@ -30,7 +30,7 @@ const getPackageFromGradle = () => {
 };
 
 const oldPackage = getPackageFromGradle();
-console.log(`🔄 Detected old package: ${oldPackage}`);
+// console.log(`🔄 Detected old package: ${oldPackage}`);
 
 const oldPackagePath = path.join(androidJavaPath, ...oldPackage.split("."));
 const newPackagePath = path.join(androidJavaPath, ...packageName.split("."));
@@ -69,12 +69,12 @@ updateFile(buildGradlePath, /applicationId\s+"[\w.]+"/g, `applicationId "${packa
 
 // 📌 Rename Package Folder
 if (fs.existsSync(oldPackagePath)) {
-  console.log(`🔄 Renaming package folder from ${oldPackagePath} to ${newPackagePath}`);
+  // console.log(`🔄 Renaming package folder from ${oldPackagePath} to ${newPackagePath}`);
   fs.mkdirSync(newPackagePath, { recursive: true });
   fs.renameSync(oldPackagePath, newPackagePath);
-  console.log(`✅ Renamed package folder to: ${newPackagePath}`);
+  // console.log(`✅ Renamed package folder to: ${newPackagePath}`);
 } else {
-  console.log(`❌ Old package folder not found: ${oldPackagePath}`);
+  // console.log(`❌ Old package folder not found: ${oldPackagePath}`);
 }
 
 // 📌 Update `MainApplication.kt` & `MainActivity.kt`
@@ -96,4 +96,4 @@ updateFile(path.join(projectRoot, "android", "settings.gradle"), /rootProject.na
 updateFile(path.join(projectRoot, "android", "app", "src", "main", "res", "values", "strings.xml"), /<string name="app_name">[^<]+<\/string>/g, `<string name="app_name">${applicationDisplayName}</string>`);
 updateFile(iosInfoPlistPath, /<key>CFBundleDisplayName<\/key>\n\s*<string>[^<]+<\/string>/g, `<key>CFBundleDisplayName</key>\n  <string>${applicationDisplayName}</string>`);
 
-console.log("✅ Package Name & Bundle ID Updated Successfully! 🎉");
+// console.log("✅ Package Name & Bundle ID Updated Successfully! 🎉");
