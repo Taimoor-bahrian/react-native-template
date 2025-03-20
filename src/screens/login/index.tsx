@@ -28,7 +28,7 @@ const Login = ({ navigation }: LoginScreenProps) => {
             username: userName,
             password: password
         }
-        LoginApi({ setIsLoading, body }).then(()=>{}).catch((err)=>console.log(err))
+        LoginApi({ setIsLoading, body }).then(() => { }).catch((err) => console.log(err))
     }
 
     return (
@@ -50,8 +50,7 @@ const Login = ({ navigation }: LoginScreenProps) => {
                 value={password}
                 onChangeText={setPassword}
             />
-            <Text onPress={SetDefaultCredentials} style={{ marginVertical: 20, textAlign: 'center' }}>Use default credentials</Text>
-            <View >
+            <View style={{ marginTop: 40 }}>
                 <Button label={Strings.login} onPress={OnClickLogin} />
             </View>
         </View>
