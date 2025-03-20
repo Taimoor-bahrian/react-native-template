@@ -24,7 +24,7 @@ Api.interceptors.response.use(
   },
 
   async function (error) {
-    const originalRequest = error.config
+  
     if (error?.response?.status == 500) {
      
     } else if (error?.response?.status == 404) {

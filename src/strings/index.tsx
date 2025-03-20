@@ -1,3 +1,5 @@
 export const Strings = {
-    login: 'Login'
+    login: "Login",
+    password: "Password",
+    userName: "User name",
 }

@@ -1,6 +1,6 @@
 
 const urls = {
-    dev: '',
+    dev: 'https://json-placeholder.mock.beeceptor.com/',
     stg: '',
     prd: ''
 }
@@ -9,5 +9,5 @@ const baseUrl = urls.dev
 
 export const Endpoints = {
     baseUrl,
-    login: `${baseUrl}`,
+    login: `${baseUrl}login`,
 }
